@@ -1,12 +1,12 @@
 import { Button } from "@heroui/button";
-import Container from "../../UI/Container";
 import { Link } from "@heroui/link";
 import { getRecentPosts } from "@/src/services/RecentPosts";
-import Card from "../../UI/Card";
+import Container from "@/src/components/UI/Container";
+import Card from "@/src/components/UI/Card";
 
 const RecentPosts = async() => {
    const {data: posts} = await getRecentPosts()
-    console.log("data", posts)
+    
   return (
     <Container>
         <div className="section-title my-8">

@@ -2,7 +2,7 @@
 const page = () => {
   return (
     <div>
-      register
+     <h1>Claim request</h1>
     </div>
   );
 };
