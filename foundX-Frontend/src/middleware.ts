@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { getCurrentUser } from './services/AuthService';
 
 const AuthRoutes = ["/login", "/register"]
 type Role = keyof typeof roleBasedRoutes;
@@ -9,14 +10,9 @@ const roleBasedRoutes = {
 }
 
 // This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
     const {pathname} = request.nextUrl;
-    // const user = {
-    //     name: 'John',
-    //     token:'adafafe',
-    //     role: 'ADMIN'
-    // }
-    const user = undefined
+    const user = await getCurrentUser()
     if(!user){
         if(AuthRoutes.includes(pathname)){
             return NextResponse.next()
@@ -36,5 +32,5 @@ if(user?.role && roleBasedRoutes[user.role as Role]){
  
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/profile','/admin', '/login', '/register'],
+  matcher: ['/profile','/profile/:page*', '/admin', '/login', '/register'],
 }

@@ -6,13 +6,39 @@ import Link from "next/link";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import loginValidationSchema from "@/src/schemas/login.schema";
+import Loading from "@/src/components/UI/Loading";
+import { useUserLogin } from "@/src/hooks/auth.hook";
+import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useUser } from "@/src/context/user.provider";
 
 const Loginpage = () => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const { setIsLoading: userLoading } = useUser();
+
+  const redirect = searchParams.get("redirect");
+
+  const { mutate: handleUserLogin, isPending, isSuccess } = useUserLogin();
+
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
+    handleUserLogin(data);
+   userLoading(true)
   };
 
+  useEffect(() => {
+    if (!isPending && isSuccess) {
+      if (redirect) {
+        router.push(redirect);
+      } else {
+        router.push("/");
+      }
+    }
+  }, [isPending, isSuccess]);
+
   return (
+    <>
+     {isPending && <Loading />}
     <div className="flex h-[calc(100vh-200px)] w-full flex-col items-center justify-center">
     <h3 className="my-2 text-2xl font-bold">Login with FoundX</h3>
     <p className="mb-4">Welcome Back! Let&lsquo;s Get Started</p>
@@ -41,6 +67,7 @@ const Loginpage = () => {
       </div>
     </div>
   </div>
+  </>
   );
 };
 
